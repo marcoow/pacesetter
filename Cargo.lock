@@ -592,6 +592,16 @@ dependencies = [
 ]
 
 [[package]]
+name = "cruet"
+version = "0.14.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "6132609543972496bc97b1e01f1ce6586768870aeb4cabeb3385f4e05b5caead"
+dependencies = [
+ "once_cell",
+ "regex",
+]
+
+[[package]]
 name = "crunchy"
 version = "0.2.2"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -1980,6 +1990,7 @@ version = "0.0.1"
 dependencies = [
  "axum",
  "clap",
+ "cruet",
  "dotenvy",
  "figment",
  "hyper",

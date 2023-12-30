@@ -9,6 +9,7 @@ license = "MIT"
 [dependencies]
 axum = "0.7"
 clap = "4.4"
+cruet = "0.14"
 dotenvy = "0.15"
 figment = { version = "0.10", features = ["toml", "env"] }
 rand = "0.8"
