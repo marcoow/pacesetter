@@ -107,7 +107,8 @@ async fn build_template_path(blueprint: Blueprint) -> Result<TemplatePath, anyho
         Blueprint::Minimal => "minimal",
     };
 
-    let target_directory = std::env::temp_dir().join(format!("pacesetter-cli-blueprint-{}", VERSION));
+    let target_directory =
+        std::env::temp_dir().join(format!("pacesetter-cli-blueprint-{}", VERSION));
     std::fs::create_dir_all(&target_directory)
         .context("Failed to create a temporary directory for Pacesetter CLI's blueprints")?;
     BLUEPRINTS_DIR

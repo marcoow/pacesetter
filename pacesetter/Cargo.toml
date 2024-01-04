@@ -7,11 +7,17 @@ description = "Meta-framework on top of axum"
 license = "MIT"
 
 [dependencies]
+anyhow = "1"
 axum = "0.7"
 clap = "4.4"
 cruet = "0.14"
 dotenvy = "0.15"
 figment = { version = "0.10", features = ["toml", "env"] }
+include_dir = "0.7"
+liquid = "~0.26"
+liquid-core = "~0.26"
+liquid-lib = "~0.26"
+liquid-derive = "~0.26"
 rand = "0.8"
 regex = "1.10"
 serde = { version = "1.0", features = ["derive"] } 
@@ -28,3 +34,6 @@ validator = { version = "0.16", features = ["derive"] }
 
 [dev-dependencies]
 hyper = { version = "1.0", features = ["full"] }
+
+[build-dependencies]
+vergen = { version = "8.0.0", features = ["build", "git", "gitcl"] }

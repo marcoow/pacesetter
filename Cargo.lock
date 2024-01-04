@@ -1988,12 +1988,18 @@ checksum = "b15813163c1d831bf4a13c3610c05c0d03b39feb07f7e09fa234dac9b15aaf39"
 name = "pacesetter"
 version = "0.0.1"
 dependencies = [
+ "anyhow",
  "axum",
  "clap",
  "cruet",
  "dotenvy",
  "figment",
  "hyper",
+ "include_dir",
+ "liquid",
+ "liquid-core",
+ "liquid-derive",
+ "liquid-lib",
  "rand",
  "regex",
  "serde",
@@ -2007,6 +2013,7 @@ dependencies = [
  "tracing-subscriber",
  "url",
  "validator",
+ "vergen",
 ]
 
 [[package]]
