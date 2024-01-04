@@ -107,16 +107,17 @@ async fn build_template_path(blueprint: Blueprint) -> Result<TemplatePath, anyho
         Blueprint::Minimal => "minimal",
     };
 
-    let target_directory = std::env::temp_dir().join(format!("pacesetter-blueprint-{}", VERSION));
+    let target_directory =
+        std::env::temp_dir().join(format!("pacesetter-cli-blueprint-{}", VERSION));
     std::fs::create_dir_all(&target_directory)
-        .context("Failed to create a temporary directory for Pacesetter's blueprints")?;
+        .context("Failed to create a temporary directory for Pacesetter CLI's blueprints")?;
     BLUEPRINTS_DIR
         .extract(&target_directory)
-        .context("Failed to extract Pacesetter's blueprints to a temporary directory")?;
+        .context("Failed to extract Pacesetter CLI's blueprints to a temporary directory")?;
     let bluprint_path = target_directory.join(blueprint_folder);
     let bluprint_path = bluprint_path
         .to_str()
-        .unwrap_or("Failed to get full path to Pacesetter's blueprint");
+        .unwrap_or("Failed to get full path to Pacesetter CLI's blueprint");
 
     Ok(TemplatePath {
         path: Some(String::from(bluprint_path)),
