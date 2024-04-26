@@ -11,6 +11,7 @@ pub struct AppState {
 }
 
 {% if template_type != "minimal" %}
+#[doc(hidden)]
 pub async fn app_state(config: Config) -> AppState {
     let db_pool = connect_pool(config.database)
         .await

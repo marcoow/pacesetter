@@ -9,9 +9,11 @@ use tracing_subscriber::{filter::EnvFilter, fmt, layer::SubscriberExt, util::Sub
 
 pub mod controllers;
 pub mod middlewares;
+#[doc(hidden)]
 pub mod routes;
 pub mod state;
 
+#[doc(hidden)]
 pub async fn run() -> anyhow::Result<()> {
     let env = get_env().context("Cannot get environment!")?;
     let config: Config = load_config(&env).context("Cannot load config!")?;
@@ -69,6 +71,7 @@ where
 /// * registers a [`tracing_panic::panic_hook`]
 ///
 /// The function respects the `RUST_LOG` if set or defaults to filtering spans and events with level [`tracing_subscriber::filter::LevelFilter::INFO`] and higher.
+#[doc(hidden)]
 pub fn init_tracing() {
     let filter = EnvFilter::try_from_default_env()
         .or_else(|_| EnvFilter::try_new("info"))
