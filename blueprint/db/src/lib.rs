@@ -7,6 +7,7 @@ pub use sqlx::postgres::PgPool as DbPool;
 
 pub mod entities;
 
+#[doc(hidden)]
 pub async fn connect_pool(config: DatabaseConfig) -> Result<DbPool, anyhow::Error> {
     let pool = PgPoolOptions::new()
         .connect(config.url.as_str())
