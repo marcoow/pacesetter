@@ -124,6 +124,7 @@ pub struct DatabaseConfig {
 /// All application-specific configuration is read from the respective configuration files in
 /// the `config/app.toml` and `config/environments/<environment>.toml` files such that settings
 /// in the latter override settings in the former.
+#[doc(hidden)]
 pub fn load_config<'a, T>(env: &Environment) -> Result<T, anyhow::Error>
 where
     T: Deserialize<'a>,
@@ -164,6 +165,7 @@ where
 /// Aspects of the application might behave differently based on the currently active environment.
 #[allow(missing_docs)]
 #[derive(Debug, Clone, PartialEq)]
+#[doc(hidden)]
 pub enum Environment {
     Development,
     Production,
@@ -190,6 +192,7 @@ impl Display for Environment {
 /// ```
 ///
 /// "dev" and "development" are parsed as [`Environment::Development`], "prod" and "production" are parsed as [`Environment::Production`] and "test" is parsed as [`Environment::Test`]. Parsing environments is case-insensitive.
+#[doc(hidden)]
 pub fn get_env() -> Result<Environment, anyhow::Error> {
     match env::var("APP_ENVIRONMENT") {
         Ok(val) => {
