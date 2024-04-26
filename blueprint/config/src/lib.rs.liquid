@@ -10,6 +10,11 @@ use std::fmt::{Display, Formatter};
 use std::net::{IpAddr, Ipv4Addr, SocketAddr};
 use tracing::info;
 
+/// The application configuration.
+///
+/// This struct is the central point for the entire application configuration. It holds the [`ServerConfig`] {% unless template_type == "minimal" -%}as well as [`DatabaseConfig`] {%- endunless %}and can be extended with any application-specific configuration settings that will be read from the main `app.toml` and the environment-specific configuration files.
+///
+/// For any setting that appears in both the `app.toml` and the environment-specific file, the latter will override the former so that default settings can be kept in `app.toml` that are overridden per environment if necessary.
 #[derive(Deserialize, Clone, Debug)]
 pub struct Config {
     pub server: ServerConfig,
@@ -23,7 +28,7 @@ pub struct Config {
 ///
 /// This struct keeps all settings specific to the server – currently that is the interface the server binds to
 /// but more might be added in the future. The struct is provided pre-defined by Pacesetter and cannot be changed. It
-/// **must** be used for the `server` field in the application-specific `Config` struct:
+/// **must** be used for the `server` field in the application-specific [`Config`] struct:
 ///
 /// ```rust
 /// #[derive(Deserialize, Clone, Debug)]
@@ -73,7 +78,7 @@ impl ServerConfig {
 ///
 /// This struct keeps all settings specific to the database – currently that is the database URL to use to connect to the database
 /// but more might be added in the future. The struct is provided pre-defined by Pacesetter and cannot be changed. It
-/// **must** be used for the `database` field in the application-specific `Config` struct:
+/// **must** be used for the `database` field in the application-specific [`Config`] struct:
 ///
 /// ```rust
 /// #[derive(Deserialize, Clone, Debug)]
