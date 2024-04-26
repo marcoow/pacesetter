@@ -97,38 +97,6 @@ pub struct DatabaseConfig {
 }
 {%- endunless %}
 
-/// Loads the application's configuration.
-///
-/// Examples:
-/// ```rust
-/// use my_app_config::Config;
-/// use pacesetter::{get_env, load_config};
-///
-/// let env = get_env();
-/// let config: Config = load_config(&env);
-/// ```
-///
-/// The returned `Config` struct is defined in the `config` crate, e.g.
-///
-/// ```rust
-/// #[derive(Deserialize, Debug)]
-/// pub struct Config {
-///     pub server: ServerConfig,
-{% unless template_type == "minimal" -%}
-///     pub database: DatabaseConfig,
-{%- endunless %}
-///
-///     pub app_setting: String,
-/// }
-/// ```
-///
-/// For the Development and Test environment, this function will define environment variables
-/// based on the contents of the `.env` and `.env.test` files respectively. `.env` files are
-/// ignored in the production environment.
-///
-/// All application-specific configuration is read from the respective configuration files in
-/// the `config/app.toml` and `config/environments/<environment>.toml` files such that settings
-/// in the latter override settings in the former.
 #[doc(hidden)]
 pub fn load_config<'a, T>(env: &Environment) -> Result<T, anyhow::Error>
 where
@@ -165,10 +133,6 @@ where
     Ok(config)
 }
 
-/// The environment the application runs in – either Development, Production, or Test.
-///
-/// Aspects of the application might behave differently based on the currently active environment.
-#[allow(missing_docs)]
 #[derive(Debug, Clone, PartialEq)]
 #[doc(hidden)]
 pub enum Environment {
@@ -187,16 +151,6 @@ impl Display for Environment {
     }
 }
 
-/// Gets the [`Environment`] from the `APP_ENVIRONMENT` environment variable or defaults to [`Environment::Development`] if that is not set.
-///
-/// Example
-/// ```rust
-/// assert_eq!(env::var("APP_ENVIRONMENT"), Ok("dev"));
-/// let env = get_env();
-/// assert_eq!(env, Environment::Development);
-/// ```
-///
-/// "dev" and "development" are parsed as [`Environment::Development`], "prod" and "production" are parsed as [`Environment::Production`] and "test" is parsed as [`Environment::Test`]. Parsing environments is case-insensitive.
 #[doc(hidden)]
 pub fn get_env() -> Result<Environment, anyhow::Error> {
     match env::var("APP_ENVIRONMENT") {
