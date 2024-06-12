@@ -175,6 +175,47 @@ jobs:
         cd my-app
         cargo clippy --all-targets -- -D warnings
 
+  doc-generated-full:
+    name: "Build docs for generated full example app"
+    runs-on: ubuntu-latest
+    needs: generate-full
+
+    services:
+      postgres:
+        image: postgres
+        env:
+          POSTGRES_DB: my_app
+          POSTGRES_USER: my_app
+          POSTGRES_PASSWORD: my_app
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+        ports:
+          - 5432:5432
+
+    steps:
+    - uses: actions/checkout@v4
+    - uses: actions-rust-lang/setup-rust-toolchain@v1
+
+    - uses: actions/download-artifact@65a9edc5881444af0b9093a5e628f2fe47ea3b2e # v4
+      with:
+        name: my-app-full
+        path: my-app
+
+    - name: migrate
+      run: |
+        cd my-app
+        cargo db reset
+
+    - name: doc-generated
+      env:
+        RUSTFLAGS: "-D missing-docs"
+      run: |
+        cd my-app
+        cargo doc --workspace --all-features --no-deps
+
   run-generated-full:
     name: "Run generated full example app"
     runs-on: ubuntu-latest
@@ -301,7 +342,48 @@ jobs:
       run: |
         cd my-app
         cargo fmt --all -- --check
-  
+
+  doc-generated-default:
+    name: "Build docs for generated default example app"
+    runs-on: ubuntu-latest
+    needs: generate-default
+
+    services:
+      postgres:
+        image: postgres
+        env:
+          POSTGRES_DB: my_app
+          POSTGRES_USER: my_app
+          POSTGRES_PASSWORD: my_app
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+        ports:
+          - 5432:5432
+
+    steps:
+    - uses: actions/checkout@v4
+    - uses: actions-rust-lang/setup-rust-toolchain@v1
+
+    - uses: actions/download-artifact@65a9edc5881444af0b9093a5e628f2fe47ea3b2e # v4
+      with:
+        name: my-app-default
+        path: my-app
+
+    - name: migrate
+      run: |
+        cd my-app
+        cargo db reset
+
+    - name: doc-generated
+      env:
+        RUSTFLAGS: "-D missing-docs"
+      run: |
+        cd my-app
+        cargo doc --workspace --all-features --no-deps
+
   run-generators-with-generated-default:
     name: "Run generators on generated default example app"
     runs-on: ubuntu-latest
@@ -476,7 +558,28 @@ jobs:
       run: |
         cd my-app
         cargo fmt --all -- --check
-  
+
+  doc-generated-minimal:
+    name: "Build docs for generated minimal example app"
+    runs-on: ubuntu-latest
+    needs: generate-minimal
+
+    steps:
+    - uses: actions/checkout@v4
+    - uses: actions-rust-lang/setup-rust-toolchain@v1
+
+    - uses: actions/download-artifact@65a9edc5881444af0b9093a5e628f2fe47ea3b2e # v4
+      with:
+        name: my-app-minimal
+        path: my-app
+
+    - name: doc-generated
+      env:
+        RUSTFLAGS: "-D missing-docs"
+      run: |
+        cd my-app
+        cargo doc --workspace --no-deps
+
   clippy-generated-minimal:
     name: "Run Clippy on generated minimal example app"
     runs-on: ubuntu-latest
