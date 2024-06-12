@@ -185,7 +185,10 @@ pub fn get_env() -> Result<Environment, anyhow::Error> {
     }
 }
 
-pub(crate) fn parse_env(env: &str) -> Result<Environment, anyhow::Error> {
+/// Parses an [`Environment`] from a string.
+///
+/// The environment can be passed in different forms, e.g. "dev", "development", "prod", etc. If an invalid environment is passed, an error is returned.
+pub fn parse_env(env: &str) -> Result<Environment, anyhow::Error> {
     let env = &env.to_lowercase();
     match env.as_str() {
         "dev" => Ok(Environment::Development),
