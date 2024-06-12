@@ -58,6 +58,5 @@ pub async fn connect_pool(config: DatabaseConfig) -> Result<DbPool, anyhow::Erro
     Ok(pool)
 }
 
-#[cfg(any(feature = "test-helpers", doc))]
-#[doc(cfg(feature = "test-helpers"))]
+#[cfg(feature = "test-helpers")]
 pub mod test_helpers;
