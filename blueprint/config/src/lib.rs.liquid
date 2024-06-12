@@ -101,7 +101,16 @@ pub struct DatabaseConfig {
 }
 {%- endunless %}
 
-#[doc(hidden)]
+/// Loads the application configuration for a particular environment.
+///
+/// Depending on the environment, this function will behave differently:
+/// * for [`Environment::Development`], the function will load env vars from a `.env` file at the project root if that is present
+/// * for [`Environment::Test`], the function will load env vars from a `.env.test` file at the project root if that is present
+///
+/// Configuration settings are loaded from these sources (in that order so that latter soruces override former):
+/// * the `config/app.toml` file
+/// * the `config/environments/<development|production|test>.toml` files depending on the environment
+/// * environment variables
 pub fn load_config<'a, T>(env: &Environment) -> Result<T, anyhow::Error>
 where
     T: Deserialize<'a>,
@@ -137,11 +146,16 @@ where
     Ok(config)
 }
 
+/// The environment the application runs in.
+///
+/// The application can run in 3 different environments: development, production, and test. Depending on the environment, the configuration might be different (e.g. different databases) or the application might behave differently.
 #[derive(Debug, Clone, PartialEq)]
-#[doc(hidden)]
 pub enum Environment {
+    /// The development environment is what developers would use locally.
     Development,
+    /// The production environment would typically be used in the released, user-facing deployment of the app.
     Production,
+    /// The test environment is using when running e.g. `cargo test`
     Test,
 }
 
@@ -155,7 +169,9 @@ impl Display for Environment {
     }
 }
 
-#[doc(hidden)]
+/// Returns the currently active environment.
+///
+/// If the `APP_ENVIRONMENT` env var is set, the application environment is parsed from that (which might fail if an invalid environment is set). If the env var is not set, [`Environment::Development`] is returned.
 pub fn get_env() -> Result<Environment, anyhow::Error> {
     match env::var("APP_ENVIRONMENT") {
         Ok(val) => {
