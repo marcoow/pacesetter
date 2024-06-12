@@ -1,3 +1,5 @@
+//! The {{project-name}}-config crate contains functionality for parsing as well as accessing the project's documentation.
+
 use anyhow::{anyhow, Context};
 use dotenvy::dotenv;
 use figment::{
@@ -17,8 +19,10 @@ use tracing::info;
 /// For any setting that appears in both the `app.toml` and the environment-specific file, the latter will override the former so that default settings can be kept in `app.toml` that are overridden per environment if necessary.
 #[derive(Deserialize, Clone, Debug)]
 pub struct Config {
+    /// the server configuration: [`ServerConfig`]
     pub server: ServerConfig,
     {% unless template_type == "minimal" -%}
+    /// the database configuration: [`DatabaseConfig`]
     pub database: DatabaseConfig,
     {%- endunless %}
     // add your config settings here…
