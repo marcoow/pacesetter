@@ -1,8 +1,12 @@
 use anyhow::anyhow;
 use {{crate_name}}_config::Environment;
 
+/// Utilities for console UIs
 pub mod ui;
 
+/// Parses the [`my_app_config::Environment`] the CLI runs in from a string.
+///
+/// The environment can be passed in different forms, e.g. "dev", "development", "prod", etc. If an invalid environment is passed, this returns an error.
 pub fn parse_env(s: &str) -> Result<Environment, &'static str> {
     let s = &s.to_lowercase();
     match parse_env_internal(s) {
