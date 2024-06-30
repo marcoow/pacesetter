@@ -4,7 +4,7 @@ use sqlx::postgres::PgPool;
 
 /// A changeset representing the data that is intended to be used to either create a new user or update an existing user.
 ///
-/// Changesets are validatated in the [`create`] and [`update`] functions which return an [Result::Err] if validation fails.
+/// Changesets are validated in the [`create`] function which return an [Result::Err] if validation fails.
 ///
 /// Changesets can also be used to generate fake data for tests when the `test-helpers` feature is enabled:
 ///
