@@ -218,7 +218,7 @@ jobs:
 
     - uses: actions/upload-artifact@65462800fd760344b1a7b4382951275a0abb4808 # v4
       with:
-        name: docs
+        name: docs-full
         path: my-app/target/doc
         if-no-files-found: error
         retention-days: 3
@@ -393,7 +393,7 @@ jobs:
 
     - uses: actions/upload-artifact@65462800fd760344b1a7b4382951275a0abb4808 # v4
       with:
-        name: docs
+        name: docs-default
         path: my-app/target/doc
         if-no-files-found: error
         retention-days: 3
@@ -596,7 +596,7 @@ jobs:
 
     - uses: actions/upload-artifact@65462800fd760344b1a7b4382951275a0abb4808 # v4
       with:
-        name: docs
+        name: docs-minimal
         path: my-app/target/doc
         if-no-files-found: error
         retention-days: 3
