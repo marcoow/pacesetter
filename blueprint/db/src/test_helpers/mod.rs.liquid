@@ -9,9 +9,14 @@ use std::str::FromStr;
 use std::sync::Arc;
 
 {% if template_type == 'full' %}
+/// All test functionality related to the [`User`] entity
 pub mod users;
 {%- endif %}
 
+/// Sets up a dedicated database to be used in a test case.
+///
+/// This sets up a dedicated database as a fork of the main test database as configured in `.env.test`. The database can be used in a test case to ensure the test case is isolated from other test cases. The function returns a connection pool connected to the created database.
+/// This function is automatically called by the [`{{project-name}}-macros::db_test`] macro. The return connection pool is passed to the test case via the [`{{project-name}}-macros::DbTestContext`].
 #[allow(unused)]
 pub async fn setup_db(config: &DatabaseConfig) -> DbPool {
     let test_db_config = prepare_db(config).await;
@@ -20,6 +25,9 @@ pub async fn setup_db(config: &DatabaseConfig) -> DbPool {
         .expect("Could not connect to database!")
 }
 
+/// Drops a dedicated database for a test case.
+///
+/// This function is automatically called by the [`{{project-name}}-macros::db_test`] macro. It ensures test-specific database are cleaned up after each test run so we don't end up with large numbers of unused databases.
 pub async fn teardown_db(db_pool: DbPool) {
     let mut connect_options = db_pool.connect_options();
     let db_config = Arc::make_mut(&mut connect_options);
@@ -35,7 +43,7 @@ pub async fn teardown_db(db_pool: DbPool) {
     connection.execute(query.as_str()).await.unwrap();
 }
 
-pub async fn prepare_db(config: &DatabaseConfig) -> DatabaseConfig {
+async fn prepare_db(config: &DatabaseConfig) -> DatabaseConfig {
     let db_config = parse_db_config(&config.url);
     let db_name = db_config.get_database().unwrap();
 

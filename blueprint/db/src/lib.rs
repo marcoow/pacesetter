@@ -1,3 +1,5 @@
+//! The {{project-name}}-db crate contains all code related to database access: entities, migrations, functions for validating and reading and writing data.
+
 use anyhow::{Context, Result};
 use {{crate_name}}_config::DatabaseConfig;
 use sqlx::{postgres::PgPoolOptions, Postgres, Transaction};
@@ -48,7 +50,7 @@ pub enum Error {
     ValidationError(validator::ValidationErrors),
 }
 
-#[doc(hidden)]
+/// Creates a connection pool to the database specified in the passed [`{{project-name}}-config::DatabaseConfig`]
 pub async fn connect_pool(config: DatabaseConfig) -> Result<DbPool, anyhow::Error> {
     let pool = PgPoolOptions::new()
         .connect(config.url.as_str())
@@ -58,5 +60,6 @@ pub async fn connect_pool(config: DatabaseConfig) -> Result<DbPool, anyhow::Erro
     Ok(pool)
 }
 
+/// Functionality for working with data that is only relevant in tests but not as part of the normal application flow.
 #[cfg(feature = "test-helpers")]
 pub mod test_helpers;
