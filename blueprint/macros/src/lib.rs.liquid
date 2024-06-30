@@ -1,7 +1,23 @@
+//! The {{project-name}}-macros crate contains the `test`{%- unless template_type == "minimal" %} and `db_test`{%- endunless %} macro{%- unless template_type == "minimal" -%} s{% endunless -%}.
+
 use proc_macro::TokenStream;
 use quote::quote;
 use syn::{parse_macro_input, ItemFn};
 
+/// Used to mark an application test.
+///
+/// Example:
+/// ```
+/// #[test]
+/// async fn test_hello(context: &TestContext) {
+///     let response = context.app.request("/greet").send().await;
+/// 
+///     let greeting: Greeting = response.into_body().into_json().await;
+///     assert_that!(greeting.hello, eq(String::from("world")));
+/// }
+/// ```
+///
+/// Test functions marked with this attribute receive a [`TestContext`] struct via which they get access a preconfigured instance of the application. The application instance is extended with convenience methods for making requests from the test.
 #[proc_macro_attribute]
 pub fn test(_: TokenStream, item: TokenStream) -> TokenStream {
     let input = parse_macro_input!(item as ItemFn);
@@ -30,6 +46,38 @@ pub fn test(_: TokenStream, item: TokenStream) -> TokenStream {
 }
 
 {% unless template_type == "minimal" -%}
+/// Used to mark an application test.
+///
+/// Example:
+/// ```
+/// #[db_test]
+/// async fn test_read_all(context: &DbTestContext) {
+///     let task_changeset: TaskChangeset = Faker.fake();
+///     create_task(task_changeset.clone(), &context.db_pool)
+///         .await
+///         .unwrap();
+/// 
+///     let response = context
+///         .app
+///         .request("/tasks")
+///         .method(Method::GET)
+///         .send()
+///         .await;
+/// 
+///     assert_that!(response.status(), eq(StatusCode::OK));
+/// 
+///     let tasks: TasksList = response.into_body().into_json::<TasksList>().await;
+///     assert_that!(tasks, len(eq(1)));
+///     assert_that!(
+///         tasks.first().unwrap().description,
+///         eq(task_changeset.description)
+///     );
+/// }
+/// ```
+///
+/// Test functions marked with this attribute receive a [`DbTestContext`] struct via which they get access a preconfigured instance of the application as well as a pool of database connections. The connection pool is connected to the dedicated database for this single test case. The application instance is configured to be connected to the same database so that data created in the test is accessible to the application and vice versa (see in the example how a task is created in the task, which the application reads and responds with as JSON). That allows full-stack testing without interfering with other tests.
+///
+/// The test-specific database is cleaned up automatically so that no manual cleanup is necessary.
 #[proc_macro_attribute]
 pub fn db_test(_: TokenStream, item: TokenStream) -> TokenStream {
     let input = parse_macro_input!(item as ItemFn);
