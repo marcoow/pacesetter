@@ -18,7 +18,7 @@ use syn::{parse_macro_input, ItemFn};
 /// }
 /// ```
 ///
-/// Test functions marked with this attribute receive a [`TestContext`] struct via which they get access a preconfigured instance of the application. The application instance is extended with convenience methods for making requests from the test.
+/// Test functions marked with this attribute receive a [`{{project-name}}-web::test_helpers::TestContext`] struct via which they get access a preconfigured instance of the application. The application instance is extended with convenience methods for making requests from the test.
 #[proc_macro_attribute]
 pub fn test(_: TokenStream, item: TokenStream) -> TokenStream {
     let input = parse_macro_input!(item as ItemFn);
@@ -76,7 +76,7 @@ pub fn test(_: TokenStream, item: TokenStream) -> TokenStream {
 /// }
 /// ```
 ///
-/// Test functions marked with this attribute receive a [`DbTestContext`] struct via which they get access a preconfigured instance of the application as well as a pool of database connections. The connection pool is connected to the dedicated database for this single test case. The application instance is configured to be connected to the same database so that data created in the test is accessible to the application and vice versa (see in the example how a task is created in the task, which the application reads and responds with as JSON). That allows full-stack testing without interfering with other tests.
+/// Test functions marked with this attribute receive a [`{{project-name}}-web::test_helpers::DbTestContext`] struct via which they get access a preconfigured instance of the application as well as a pool of database connections. The connection pool is connected to the dedicated database for this single test case. The application instance is configured to be connected to the same database so that data created in the test is accessible to the application and vice versa (see in the example how a task is created in the task, which the application reads and responds with as JSON). That allows full-stack testing without interfering with other tests.
 ///
 /// The test-specific database is cleaned up automatically so that no manual cleanup is necessary.
 #[proc_macro_attribute]
