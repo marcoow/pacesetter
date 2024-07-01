@@ -7,6 +7,9 @@ publish = false
 [lib]
 doctest = false
 
+[features]
+test-helpers = ["dep:serde_json", "dep:tower", "dep:hyper", "dep:{{project-name}}-macros"]
+
 [dependencies]
 anyhow = "1.0"
 axum = "0.7"
@@ -23,14 +26,15 @@ tracing-subscriber = { version = "0.3", features = ["env-filter", "registry", "f
 {% unless template_type == "minimal" -%}
 uuid = { version = "1.6", features = ["serde"] }
 {%- endunless %}
+serde_json = { version = "1.0", optional = true }
+tower = { version = "0.4", features = ["util"], optional = true }
+hyper = { version = "1.0", features = ["full"], optional = true }
+{{project-name}}-macros = { path = "../macros", optional = true }
 
 [dev-dependencies]
 fake = "2.9"
 googletest = "0.11"
-serde_json = "1.0"
-tower = { version = "0.4", features = ["util"] }
-hyper = { version = "1.0", features = ["full"] }
 {% unless template_type == "minimal" -%}
 {{project-name}}-db = { path = "../db", features = ["test-helpers"] }
 {%- endunless %}
-{{project-name}}-macros = { path = "../macros" }
+{{project-name}}-web = { path = ".", features = ["test-helpers"] }

@@ -11,13 +11,13 @@ use {{crate_name}}_db::{
     test_helpers::{setup_db, teardown_db},
     DbPool,
 };
-use {{crate_name}}_web::routes::routes;
-use {{crate_name}}_web::state::AppState;
+use crate::routes::routes;
+use crate::state::AppState;
 use std::cell::OnceCell;
 {%- else -%}
 use {{crate_name}}_config::{load_config, Config, Environment};
-use {{crate_name}}_web::routes::routes;
-use {{crate_name}}_web::state::AppState;
+use crate::routes::routes;
+use crate::state::AppState;
 use std::cell::OnceCell;
 {%- endif -%}
 use tower::ServiceExt;
@@ -88,10 +88,10 @@ impl RouterExt for Router {
 }
 
 pub trait BodyExt {
-    #[allow(unused)]
+    #[allow(unused, async_fn_in_trait)]
     async fn into_bytes(self) -> Bytes;
 
-    #[allow(unused)]
+    #[allow(unused, async_fn_in_trait)]
     async fn into_json<T>(self) -> T
     where
         T: serde::de::DeserializeOwned;
