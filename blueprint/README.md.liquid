@@ -73,9 +73,5 @@ Building the project's docs:
 Build the project's documentation with:
 
 ```
-{% if template_type == "minimal" -%}
-cargo doc --workspace
-{%- else -%}
 cargo doc --workspace --all-features
-{%- endif %}
 ```
