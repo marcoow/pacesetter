@@ -1,8 +1,7 @@
 use anyhow::Context;
 use clap::{Parser, Subcommand};
-use {{crate_name}}_cli::util::parse_env;
 use {{crate_name}}_cli::util::ui::UI;
-use {{crate_name}}_config::{load_config, Config, Environment};
+use {{crate_name}}_config::{load_config, parse_env, Config, Environment};
 use {{crate_name}}_config::DatabaseConfig;
 use sqlx::postgres::{PgConnectOptions, PgConnection};
 use sqlx::{

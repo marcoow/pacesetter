@@ -1,7 +1,7 @@
 {%- if has_db -%}
-use crate::common::{BodyExt, DbTestContext, RouterExt};
+use crate::test_helpers::{BodyExt, DbTestContext, RouterExt};
 {% else %}
-use crate::common::{BodyExt, TestContext, RouterExt};
+use crate::test_helpers::{BodyExt, TestContext, RouterExt};
 {%- endif -%}
 use axum::{body::Body, http::Method};
 use googletest::prelude::*;

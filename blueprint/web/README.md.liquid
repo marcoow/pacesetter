@@ -69,3 +69,7 @@ async fn test_hello(context: &TestContext) {
     assert_that!(greeting.hello, eq(String::from("world")));
 }
 {% endif -%}
+
+### Test helpers
+
+The {{project-name}}-web crate includes test helpers in `src/test_helpers` that add a number of convience functions for easier issuing of requests and parsing of responses. Those helpers depend on the `test-helpers` feature flag which is automatically enabled when running tests but not for production builds. _You should not need to make any changes to these helpers._

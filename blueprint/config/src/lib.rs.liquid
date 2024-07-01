@@ -1,3 +1,5 @@
+//! The {{project-name}}-config crate contains functionality for parsing as well as accessing the project's documentation.
+
 use anyhow::{anyhow, Context};
 use dotenvy::dotenv;
 use figment::{
@@ -10,10 +12,17 @@ use std::fmt::{Display, Formatter};
 use std::net::{IpAddr, Ipv4Addr, SocketAddr};
 use tracing::info;
 
+/// The application configuration.
+///
+/// This struct is the central point for the entire application configuration. It holds the [`ServerConfig`] {% unless template_type == "minimal" -%}as well as [`DatabaseConfig`] {%- endunless %}and can be extended with any application-specific configuration settings that will be read from the main `app.toml` and the environment-specific configuration files.
+///
+/// For any setting that appears in both the `app.toml` and the environment-specific file, the latter will override the former so that default settings can be kept in `app.toml` that are overridden per environment if necessary.
 #[derive(Deserialize, Clone, Debug)]
 pub struct Config {
+    /// the server configuration: [`ServerConfig`]
     pub server: ServerConfig,
     {% unless template_type == "minimal" -%}
+    /// the database configuration: [`DatabaseConfig`]
     pub database: DatabaseConfig,
     {%- endunless %}
     // add your config settings here…
@@ -23,7 +32,7 @@ pub struct Config {
 ///
 /// This struct keeps all settings specific to the server – currently that is the interface the server binds to
 /// but more might be added in the future. The struct is provided pre-defined by Pacesetter and cannot be changed. It
-/// **must** be used for the `server` field in the application-specific `Config` struct:
+/// **must** be used for the `server` field in the application-specific [`Config`] struct:
 ///
 /// ```rust
 /// #[derive(Deserialize, Clone, Debug)]
@@ -73,7 +82,7 @@ impl ServerConfig {
 ///
 /// This struct keeps all settings specific to the database – currently that is the database URL to use to connect to the database
 /// but more might be added in the future. The struct is provided pre-defined by Pacesetter and cannot be changed. It
-/// **must** be used for the `database` field in the application-specific `Config` struct:
+/// **must** be used for the `database` field in the application-specific [`Config`] struct:
 ///
 /// ```rust
 /// #[derive(Deserialize, Clone, Debug)]
@@ -92,38 +101,16 @@ pub struct DatabaseConfig {
 }
 {%- endunless %}
 
-/// Loads the application's configuration.
+/// Loads the application configuration for a particular environment.
 ///
-/// Examples:
-/// ```rust
-/// use my_app_config::Config;
-/// use pacesetter::{get_env, load_config};
+/// Depending on the environment, this function will behave differently:
+/// * for [`Environment::Development`], the function will load env vars from a `.env` file at the project root if that is present
+/// * for [`Environment::Test`], the function will load env vars from a `.env.test` file at the project root if that is present
 ///
-/// let env = get_env();
-/// let config: Config = load_config(&env);
-/// ```
-///
-/// The returned `Config` struct is defined in the `config` crate, e.g.
-///
-/// ```rust
-/// #[derive(Deserialize, Debug)]
-/// pub struct Config {
-///     pub server: ServerConfig,
-{% unless template_type == "minimal" -%}
-///     pub database: DatabaseConfig,
-{%- endunless %}
-///
-///     pub app_setting: String,
-/// }
-/// ```
-///
-/// For the Development and Test environment, this function will define environment variables
-/// based on the contents of the `.env` and `.env.test` files respectively. `.env` files are
-/// ignored in the production environment.
-///
-/// All application-specific configuration is read from the respective configuration files in
-/// the `config/app.toml` and `config/environments/<environment>.toml` files such that settings
-/// in the latter override settings in the former.
+/// Configuration settings are loaded from these sources (in that order so that latter soruces override former):
+/// * the `config/app.toml` file
+/// * the `config/environments/<development|production|test>.toml` files depending on the environment
+/// * environment variables
 pub fn load_config<'a, T>(env: &Environment) -> Result<T, anyhow::Error>
 where
     T: Deserialize<'a>,
@@ -159,14 +146,16 @@ where
     Ok(config)
 }
 
-/// The environment the application runs in – either Development, Production, or Test.
+/// The environment the application runs in.
 ///
-/// Aspects of the application might behave differently based on the currently active environment.
-#[allow(missing_docs)]
+/// The application can run in 3 different environments: development, production, and test. Depending on the environment, the configuration might be different (e.g. different databases) or the application might behave differently.
 #[derive(Debug, Clone, PartialEq)]
 pub enum Environment {
+    /// The development environment is what developers would use locally.
     Development,
+    /// The production environment would typically be used in the released, user-facing deployment of the app.
     Production,
+    /// The test environment is using when running e.g. `cargo test`
     Test,
 }
 
@@ -180,16 +169,9 @@ impl Display for Environment {
     }
 }
 
-/// Gets the [`Environment`] from the `APP_ENVIRONMENT` environment variable or defaults to [`Environment::Development`] if that is not set.
+/// Returns the currently active environment.
 ///
-/// Example
-/// ```rust
-/// assert_eq!(env::var("APP_ENVIRONMENT"), Ok("dev"));
-/// let env = get_env();
-/// assert_eq!(env, Environment::Development);
-/// ```
-///
-/// "dev" and "development" are parsed as [`Environment::Development`], "prod" and "production" are parsed as [`Environment::Production`] and "test" is parsed as [`Environment::Test`]. Parsing environments is case-insensitive.
+/// If the `APP_ENVIRONMENT` env var is set, the application environment is parsed from that (which might fail if an invalid environment is set). If the env var is not set, [`Environment::Development`] is returned.
 pub fn get_env() -> Result<Environment, anyhow::Error> {
     match env::var("APP_ENVIRONMENT") {
         Ok(val) => {
@@ -203,7 +185,10 @@ pub fn get_env() -> Result<Environment, anyhow::Error> {
     }
 }
 
-pub(crate) fn parse_env(env: &str) -> Result<Environment, anyhow::Error> {
+/// Parses an [`Environment`] from a string.
+///
+/// The environment can be passed in different forms, e.g. "dev", "development", "prod", etc. If an invalid environment is passed, an error is returned.
+pub fn parse_env(env: &str) -> Result<Environment, anyhow::Error> {
     let env = &env.to_lowercase();
     match env.as_str() {
         "dev" => Ok(Environment::Development),
