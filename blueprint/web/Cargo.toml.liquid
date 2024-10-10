@@ -34,7 +34,7 @@ hyper = { version = "1.0", features = ["full"], optional = true }
 
 [dev-dependencies]
 fake = "2.9"
-googletest = "0.11"
+googletest = "0.12"
 {% unless template_type == "minimal" -%}
 {{project-name}}-db = { path = "../db", features = ["test-helpers"] }
 {%- endunless %}
